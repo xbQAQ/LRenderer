@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{519f31f9-747d-4045-96d1-34f7981530fd}</ProjectGuid>
+    <RootNamespace>LRenderer</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseIntelIPP1A>false</UseIntelIPP1A>
+    <UseInteloneTBB>true</UseInteloneTBB>
+    <InstrumentInteloneTBB>false</InstrumentInteloneTBB>
+    <UseInteloneMKL>No</UseInteloneMKL>
+    <UseInteloneDAL>false</UseInteloneDAL>
+    <EnableDPCppRuntimeEnvironment>false</EnableDPCppRuntimeEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseIntelIPP1A>false</UseIntelIPP1A>
+    <UseInteloneTBB>true</UseInteloneTBB>
+    <InstrumentInteloneTBB>false</InstrumentInteloneTBB>
+    <UseInteloneMKL>No</UseInteloneMKL>
+    <UseInteloneDAL>false</UseInteloneDAL>
+    <EnableDPCppRuntimeEnvironment>false</EnableDPCppRuntimeEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseIntelIPP1A>false</UseIntelIPP1A>
+    <InstrumentInteloneTBB>false</InstrumentInteloneTBB>
+    <UseInteloneMKL>No</UseInteloneMKL>
+    <UseInteloneDAL>false</UseInteloneDAL>
+    <EnableDPCppRuntimeEnvironment>false</EnableDPCppRuntimeEnvironment>
+    <UseInteloneTBB>true</UseInteloneTBB>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseIntelIPP1A>false</UseIntelIPP1A>
+    <UseInteloneTBB>true</UseInteloneTBB>
+    <InstrumentInteloneTBB>false</InstrumentInteloneTBB>
+    <UseInteloneMKL>No</UseInteloneMKL>
+    <UseInteloneDAL>false</UseInteloneDAL>
+    <EnableDPCppRuntimeEnvironment>false</EnableDPCppRuntimeEnvironment>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\LRenderer\API\glad\include;D:\LRenderer\API\glfw\include;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>D:\LRenderer\API\glfw\lib-vc2019;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>D:\LRenderer\API\glad\include;D:\LRenderer\API\glfw\include;$(IncludePath)</IncludePath>
+    <ExternalIncludePath>$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>D:\LRenderer\API\glfw\lib-vc2019;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\LRenderer;D:\LRenderer\include;D:\LRenderer\API\glad\include;D:\LRenderer\API\glfw\include;D:\LRenderer\API\glew\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\LRenderer\API\glew\lib\Release\x64;D:\LRenderer\API\glfw\lib-vc2019;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>D:\LRenderer\ImGUI;$(ExternalIncludePath)</ExternalIncludePath>
+    <CodeAnalysisRuleSet>C:\Users\12167\CPPCoreAllCheck.ruleset</CodeAnalysisRuleSet>
+    <PublicIncludeDirectories>$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>D:\LRenderer;D:\LRenderer\include;D:\LRenderer\API\glad\include;D:\LRenderer\API\glfw\include;D:\LRenderer\API\glew\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\LRenderer\API\glew\lib\Release\x64;D:\LRenderer\API\glfw\lib-vc2019;$(LibraryPath)</LibraryPath>
+    <ExternalIncludePath>D:\LRenderer\ImGUI;$(ExternalIncludePath)</ExternalIncludePath>
+    <CodeAnalysisRuleSet>C:\Users\12167\CPPCoreAllCheck.ruleset</CodeAnalysisRuleSet>
+    <PublicIncludeDirectories>$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>.\API\glad\include;D:\LRenderer\ImGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>.\API\glad\include;D:\LRenderer\ImGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\LRenderer\API\glad-4.6\include;D:\LRenderer\ImGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\LRenderer\API\glfw\lib-vc2019;D:\LRenderer\API\glew\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;glew32s.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\LRenderer\API\glad-4.6\include;D:\LRenderer\ImGUI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>D:\LRenderer\API\glfw\lib-vc2019;D:\LRenderer\API\glew\lib\Release\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glew32.lib;glew32s.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="API\glad\src\glad.c" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="ImGUI\imgui.cpp" />
+    <ClCompile Include="ImGUI\imgui_demo.cpp" />
+    <ClCompile Include="ImGUI\imgui_draw.cpp" />
+    <ClCompile Include="ImGUI\imgui_impl_glfw.cpp" />
+    <ClCompile Include="ImGUI\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="ImGUI\imgui_tables.cpp" />
+    <ClCompile Include="ImGUI\imgui_widgets.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Material.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\Model.cpp" />
+    <ClCompile Include="src\PipeLine.cpp" />
+    <ClCompile Include="src\Rasterization.cpp" />
+    <ClCompile Include="src\Shader.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\UI.cpp" />
+    <ClCompile Include="src\Vertex.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="API\OBJ_Loader.h" />
+    <ClInclude Include="include\Camera.h" />
+    <ClInclude Include="include\Fragment.h" />
+    <ClInclude Include="include\global.h" />
+    <ClInclude Include="ImGUI\imconfig.h" />
+    <ClInclude Include="ImGUI\imgui.h" />
+    <ClInclude Include="ImGUI\imgui_impl_glfw.h" />
+    <ClInclude Include="ImGUI\imgui_impl_opengl3.h" />
+    <ClInclude Include="ImGUI\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="ImGUI\imgui_internal.h" />
+    <ClInclude Include="ImGUI\imstb_rectpack.h" />
+    <ClInclude Include="ImGUI\imstb_textedit.h" />
+    <ClInclude Include="ImGUI\imstb_truetype.h" />
+    <ClInclude Include="include\Material.h" />
+    <ClInclude Include="include\Mesh.h" />
+    <ClInclude Include="include\Model.h" />
+    <ClInclude Include="include\Object.h" />
+    <ClInclude Include="include\PipeLine.h" />
+    <ClInclude Include="include\Rasterization.h" />
+    <ClInclude Include="include\Shader.h" />
+    <ClInclude Include="include\Texture.h" />
+    <ClInclude Include="include\UI.h" />
+    <ClInclude Include="include\Vertex.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
