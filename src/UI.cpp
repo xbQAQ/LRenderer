@@ -131,6 +131,13 @@ void LRenderer::UI::show() {
         pipeline->closeBackClip();
       }
 
+      ImGui::Checkbox("Line Mode", &line_mode);
+      if (line_mode) {
+        pipeline->openLineMode();
+      } else {
+        pipeline->closeLineMode();
+      }
+
       static int AA_mode = SSAA;
       if (ImGui::RadioButton("SSAA", AA_mode == SSAA)) {
         AA_mode = SSAA;

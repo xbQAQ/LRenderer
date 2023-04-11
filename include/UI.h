@@ -54,6 +54,7 @@ class UI {
   bool multiThread = true;
   bool back_clip = false;
   bool save = false;
+  bool line_mode = false;
     
   bool use_texture_shader;
   bool use_blin_phong_shader;

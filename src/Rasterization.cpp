@@ -189,76 +189,70 @@ void LRenderer::Rasterization::drawTriangle(const Triangle& t) {
 
 void LRenderer::Rasterization::drawLine(Eigen::Vector3f begin,
                                         Eigen::Vector3f end) {
-  auto x1 = begin.x();
-  auto y1 = begin.y();
-  auto x2 = end.x();
-  auto y2 = end.y();
+  auto x0 = begin.x();
+  auto y0 = begin.y();
+  auto x1 = end.x();
+  auto y1 = end.y();
 
   Eigen::Vector3f line_color = {255, 255, 255};
 
-  int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
-
-  dx = x2 - x1;
-  dy = y2 - y1;
-  dx1 = fabs(dx);
-  dy1 = fabs(dy);
-  px = 2 * dy1 - dx1;
-  py = 2 * dx1 - dy1;
-
-  if (dy1 <= dx1) {
-    if (dx >= 0) {
+  int x, y, dx, dy, dxa, dya, px, py, xb, yb, i;
+  x = x0;
+  y = y0;
+  dx = x1 - x0;
+  dy = y1 - y0;
+  dxa = abs(dx);
+  dya = abs(dy);
+  px = 2 * dya - dxa;
+  py = 2 * dxa - dya;
+  setPixel({x, y}, line_color);
+  if (dya < dxa) {
+    if (dx > 0) {
+      x = x0;
+      y = y0;
+      xb = x1;
+    } else {
       x = x1;
       y = y1;
-      xe = x2;
-    } else {
-      x = x2;
-      y = y2;
-      xe = x1;
+      xb = x0;
     }
-    Eigen::Vector2i point(x, y);
-    setPixel(point, line_color);
-    for (i = 0; x < xe; i++) {
-      x = x + 1;
-      if (px < 0) {
-        px = px + 2 * dy1;
-      } else {
-        if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0)) {
-          y = y + 1;
+    for (i = 0; x <= xb; i++) {
+      x++;
+      if (px > 0) {
+        if ((dx > 0 && dy > 0) || (dx < 0 && dy < 0)) {
+          y++;
         } else {
-          y = y - 1;
+          y--;
         }
-        px = px + 2 * (dy1 - dx1);
+        px += 2 * dya - 2 * dxa;
+      } else {
+        px += 2 * dya;
       }
-      //            delay(0);
-      Eigen::Vector2i point(x, y);
-      setPixel(point, line_color);
+      setPixel({x, y}, line_color);
     }
   } else {
-    if (dy >= 0) {
+    if (dy > 0) {
+      x = x0;
+      y = y0;
+      yb = y1;
+    } else {
       x = x1;
       y = y1;
-      ye = y2;
-    } else {
-      x = x2;
-      y = y2;
-      ye = y1;
+      yb = y0;
     }
-    Eigen::Vector2i point(x, y);
-    setPixel(point, line_color);
-    for (i = 0; y < ye; i++) {
-      y = y + 1;
-      if (py <= 0) {
-        py = py + 2 * dx1;
-      } else {
-        if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0)) {
-          x = x + 1;
+    for (i = 0; y <= yb; i++) {
+      y++;
+      if (py > 0) {
+        if ((dx > 0 && dy > 0) || (dx < 0 && dy < 0)) {
+          x++;
         } else {
-          x = x - 1;
+          x--;
         }
-        py = py + 2 * (dx1 - dy1);
+        py += 2 * dxa - 2 * dya;
+      } else {
+        py += 2 * dxa;
       }
-      Eigen::Vector2i point(x, y);
-      setPixel(point, line_color);
+      setPixel({x, y}, line_color);
     }
   }
 }
@@ -271,6 +265,10 @@ void LRenderer::Rasterization::drawLineTriangle(const Triangle& t) {
 
 void LRenderer::Rasterization::setPixel(const Eigen::Vector2i& point,
                                         const Eigen::Vector3f& color) {
+  if (point.x() < 0 || point.x() >= width || point.y() < 0 ||
+      point.y() >= height) {
+    return;
+  }
   int index = (height - point.y() - 1) * width + point.x();
   frame_buffer[index] = color * 255;
 }
