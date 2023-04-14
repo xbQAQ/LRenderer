@@ -56,14 +56,6 @@ static std::tuple<float, float, float> barycentricPerspectiveLerp(
   float beta = (betaH / Wb) * W;
   float gamma = 1.0 - alpha - beta;
 
-  if (isnan(alpha)) {
-    std::cout << "in barycentricPerspectiveLerp: "
-              << (float)(Xc * (Ya - Yb) + Yc * (Xb - Xa) + Xa * Yb) << " " << (float)Xb * Ya
-              << " Xa: " << Xa << " Xb: " << Xb << " Xc: " << Xc
-              << " Ya: " << Ya << " Yb: " << Yb << " Yc: " << Yc
-              << std::endl;
-  }
-
   return {alpha, beta, gamma};
 }
 }  // namespace LRenderer

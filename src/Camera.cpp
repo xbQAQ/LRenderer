@@ -1,15 +1,19 @@
 #include "Camera.h"
 void LRenderer::Camera::reset() {
   eye_pos = {0, 0, 10};
-  up = {0, 1, 0};
   fov = 45.0f;
   z_near = 0.1;
   z_far = 50;
-  axis = {0, 0, 0};
+  axis = {0, 1, 0};
   rotate_angle = 0;
   scale = {2.5, 2.5, 2.5};
   translate = {0, 0, 0};
+  x_angle = y_angle = z_angle = 10;
 }
+
+void LRenderer::Camera::changeNear(float _near) { z_near = _near; }
+
+void LRenderer::Camera::changeFar(float _far) { z_far = _far; }
 
 void LRenderer::Camera::updateEyePos(const Eigen::Vector3f& _eye_pos) {
   eye_pos = _eye_pos;
@@ -52,30 +56,42 @@ void LRenderer::Camera::shrinks() {
 //逆时针为正方向
 void LRenderer::Camera::rotatePositiveDirectionAroundX() {
   axis = Eigen::Vector3f(1, 0, 0);
-  rotate_angle += 10;
+  x_angle = 10;
+  y_angle = z_angle = 0;
+  rotate_angle = x_angle;
 }
 
 void LRenderer::Camera::rotateNegitiveDirectionAroundX() {
   axis = Eigen::Vector3f(1, 0, 0);
-  rotate_angle -= 10;
+  x_angle = -10;
+  y_angle = z_angle = 0;
+  rotate_angle = x_angle;
 }
 
 void LRenderer::Camera::rotatePositiveDirectionAroundY() {
   axis = Eigen::Vector3f(0, 1, 0);
-  rotate_angle += 10;
+  y_angle = 10;
+  x_angle = z_angle = 0;
+  rotate_angle = y_angle;
 }
 
 void LRenderer::Camera::rotateNegitiveDirectionAroundY() {
   axis = Eigen::Vector3f(0, 1, 0);
-  rotate_angle -= 10;
+  y_angle = -10;
+  x_angle = z_angle = 0;
+  rotate_angle = y_angle;
 }
 
 void LRenderer::Camera::rotatePositiveDirectionAroundZ() {
   axis = Eigen::Vector3f(0, 0, 1);
-  rotate_angle += 10;
+  z_angle = 10;
+  x_angle = y_angle = 0;
+  rotate_angle = z_angle;
 }
 
 void LRenderer::Camera::rotateNegitiveDirectionAroundZ() {
   axis = Eigen::Vector3f(0, 0, 1);
-  rotate_angle -= 10;
+  z_angle = -10;
+  x_angle = y_angle = 0;
+  rotate_angle = z_angle;
 }

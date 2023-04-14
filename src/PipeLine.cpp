@@ -7,7 +7,7 @@ LRenderer::PipeLine::constructTriangle(const Object& object) {
     LRenderer::Triangle tri;
     for (int j = 0; j < 3; j++) {
       tri[j] = object.mesh.vertexBuffer[object.mesh.indexBuffer[i + j]];
-      // TODO: 设置颜色
+      // 设置颜色
       tri[j].setColor(triangle_color);
     }
     triangleList.push_back(tri);
@@ -17,9 +17,13 @@ LRenderer::PipeLine::constructTriangle(const Object& object) {
 
 // 罗德里格斯旋转公式
 
-Eigen::Matrix4f get_model_matrix(const Eigen::Vector3f& axis, float angle,
-                                 const Eigen::Vector3f& scale,
-                                 const Eigen::Vector3f& translate) {
+Eigen::Matrix4f get_model_matrix(const Eigen::Matrix4f& rotationMatrix,
+                                 const Eigen::Matrix4f& scaleMatrix,
+                                 const Eigen::Matrix4f& transMatrix) {
+  return transMatrix * rotationMatrix * scaleMatrix;
+}
+
+Eigen::Matrix4f getRotateMatrix(const Eigen::Vector3f& axis, float angle) {
   Eigen::Matrix4f rotationMatrix = Eigen::Matrix4f::Identity();
   angle = angle * MY_PI / 180;
   float nx = axis.x(), ny = axis.y(), nz = axis.z();
@@ -33,16 +37,19 @@ Eigen::Matrix4f get_model_matrix(const Eigen::Vector3f& axis, float angle,
                         (1 - std::cos(angle)) * Axis * Axis.transpose() +
                         std::sin(angle) * N;
   rotationMatrix(3, 3) = 1;
+  return rotationMatrix;
+}
+Eigen::Matrix4f getScaleMatrix(const Eigen::Vector3f& scale) {
   Eigen::Matrix4f scaleMatrix = Eigen::Matrix4f::Identity();
   scaleMatrix << scale.x(), 0, 0, 0, 0, scale.y(), 0, 0, 0, 0, scale.z(), 0, 0,
       0, 0, 1;
-
+  return scaleMatrix;
+}
+Eigen::Matrix4f getTranslateMatrix(const Eigen::Vector3f& translate) {
   Eigen::Matrix4f transMatrix = Eigen::Matrix4f::Identity();
   transMatrix << 1, 0, 0, translate.x(), 0, 1, 0, translate.y(), 0, 0, 1,
       translate.z(), 0, 0, 0, 1;
-  /*std::cout << transMatrix * rotationMatrix * scaleMatrix << std::endl;*/
-
-  return transMatrix * rotationMatrix * scaleMatrix;
+  return transMatrix;
 }
 
 // A坐标轴在B坐标轴下的表示，从A到B的变换为
@@ -67,39 +74,43 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
                                       float zNear, float zFar) {
   Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
 
-   float n = -zNear, f = -zFar;
-   Eigen::Matrix4f Mperspect = Eigen::Matrix4f::Identity();
-   float A = n + f, B = -n * f;
-   Mperspect << n, 0, 0, 0, 0, n, 0, 0, 0, 0, A, B, 0, 0, 1, 0;
+  float n = -zNear, f = -zFar;
+  Eigen::Matrix4f Mperspect = Eigen::Matrix4f::Identity();
+  float A = n + f, B = -n * f;
+  Mperspect << n, 0, 0, 0, 0, n, 0, 0, 0, 0, A, B, 0, 0, 1, 0;
 
-   float tanAngle = tan(eye_fov / 2 * MY_PI / 180);
+  float tanAngle = tan(eye_fov / 2 * MY_PI / 180);
   // 正交投影矩阵，因为在观测投影时x0y平面视角默认是中心，所以上下左右相等
+  float t = std::abs(n) * tanAngle;
+  float b = -t;
+  float r = t * aspect_ratio;
+  float l = -r;
+  Eigen::Matrix4f MorthoTran = Eigen::Matrix4f::Identity();
+  Eigen::Matrix4f MorthoScale = Eigen::Matrix4f::Identity();
+
+  // 压缩成[-1, 1]
+  MorthoScale << 2 / (r - l), 0, 0, 0, 0, 2 / (t - b), 0, 0, 0, 0, 2 / (n - f),
+      0, 0, 0, 0, 1;
+  // 移动到原点
+  MorthoTran << 1, 0, 0, -(r + l) / 2, 0, 1, 0, -(t + b) / 2, 0, 0, 1,
+      -(n + f) / 2, 0, 0, 0, 1;
+
+  Eigen::Matrix4f Morth = MorthoScale * MorthoTran;
+
+  projection = Morth * Mperspect;
+
+  // 左手系
+  /*Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
+  float n = zNear, f = zFar;
+   float tanAngle = tan(eye_fov / 2 * MY_PI / 180);
    float t = std::abs(n) * tanAngle;
    float b = -t;
    float r = t * aspect_ratio;
    float l = -r;
-   Eigen::Matrix4f MorthoTran = Eigen::Matrix4f::Identity();
-   Eigen::Matrix4f MorthoScale = Eigen::Matrix4f::Identity();
-
-  // 压缩成[-1, 1]
-   MorthoScale << 2 / (r - l), 0, 0, 0, 0, 2 / (t - b), 0, 0, 0, 0, 2 / (n - f),
-       0, 0, 0, 0, 1;
-  // 移动到原点
-   MorthoTran << 1, 0, 0, -(r + l) / 2, 0, 1, 0, -(t + b) / 2, 0, 0, 1,
-      -(n + f) / 2, 0, 0, 0, 1;
-
-   Eigen::Matrix4f Morth = MorthoScale * MorthoTran;
-   //Eigen::Matrix4f Morth;
-   //Morth << 2 / abs(r - l), 0, 0, -(r + l) / abs(r - l),
-   //         0, 2 / abs(t - b), 0, -(t + b) / abs(t - b),
-   //         0, 0, 2 / abs(n - f), -(n + f) / abs(n - f), 
-   //         0, 0, 0, 1;
-
-   //Eigen::Matrix4f Mreverse;
-   //Mreverse << -1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
-
-   projection =  Morth * Mperspect;
-
+   projection << 2 * n / abs(r - l), 0, (r + l) / (r - l), 0, 0,
+                 2 * n / abs(t - b), (t + b) / (t - b), 0,
+                 0, 0, -(f + n) / (f - n), -2 * f * n / (f - n),
+                 0, 0, -1, 0;*/
   return projection;
 }
 
@@ -107,24 +118,42 @@ Eigen::Vector4f LRenderer::PipeLine::viewport(const Eigen::Vector4f& point) {
   Eigen::Matrix4f vp;
   int w = raster->width, h = raster->height;
   vp << w / 2.0, 0, 0, w / 2.0, 0, h / 2.0, 0, h / 2.0, 0, 0, 1, 0, 0, 0, 0, 1;
+
   return vp * point;
 }
 
-Eigen::Matrix4f get_normal_matrix(Eigen::Matrix4f project) {
-  return project.reverse().transpose();
+Eigen::Vector4f LRenderer::PipeLine::viewport(const Eigen::Vector4f& point,
+                                              float n, float f) {
+  int w = raster->width, h = raster->height;
+  n = -n, f = -f;
+  Eigen::Vector4f result = Eigen::Vector4f::Identity();
+  result.x() = w / 2.0 * point.x() + w / 2.0;
+  result.y() = h / 2.0 * point.y() + h / 2.0;
+  //映射到[n,f]
+  result.z() = (f - n) / 2 * point.z() + (f + n) / 2;
+  result.w() = point.w();
+  return result;
+}
+
+Eigen::Matrix4f get_normal_matrix(Eigen::Matrix4f mv) {
+  return mv.reverse().transpose();
 }
 
 Eigen::Vector4f LRenderer::PipeLine::homogeneous_division(
     const Eigen::Vector4f& point) {
-  Eigen::Vector4f result;
-  result = point / point.w();
+  Eigen::Vector4f result = point;
+  result.x() = point.x() / point.w();
+  result.y() = point.y() / point.w();
+  result.z() = point.z() / point.w();
+  result.w() = point.w() / point.w();
   return result;
 }
 
 bool LRenderer::PipeLine::viewCull(const Eigen::Vector4f& v1,
                                    const Eigen::Vector4f& v2,
                                    const Eigen::Vector4f& v3) {
-  if (isViewCull(v1 / v1.w()) && isViewCull(v2 / v2.w()) && isViewCull(v3 / v3.w())) {
+  if (isViewCull(v1 / v1.w()) && isViewCull(v2 / v2.w()) &&
+      isViewCull(v3 / v3.w())) {
     return true;
   }
   return false;
@@ -147,6 +176,9 @@ void LRenderer::PipeLine::Init() {
 
   raster->shader() = std::make_unique<Blin_Phong_Shader>();
   InitShader();
+  
+  pre_model.pre_axis = camera.axis;
+  pre_model.pre_rotate = getRotateMatrix(camera.axis, 180);
 
   raster->openSSAA();
   raster->set4xFreq();
@@ -167,7 +199,7 @@ void LRenderer::PipeLine::Init() {
 
 void LRenderer::PipeLine::InitShader() {
   raster->shader()->setModelMatrix(get_model_matrix(
-      camera.axis, camera.rotate_angle, camera.scale, camera.translate));
+      getRotateMatrix(camera.axis, 180), getScaleMatrix(camera.scale), getTranslateMatrix(camera.translate)));
   raster->shader()->setViewMatrix(
       get_view_matrix(camera.eye_pos, camera.right, camera.up, camera.front));
   raster->shader()->setProjectMatrix(get_projection_matrix(
@@ -198,6 +230,22 @@ void LRenderer::PipeLine::reloadObj() {
   }
 }
 
+void LRenderer::PipeLine::reset() {
+  triangle_color = Eigen::Vector3f(9, 216, 229);
+  raster->openNormal();
+
+  camera.reset();
+
+  raster->shader() = std::make_unique<Blin_Phong_Shader>();
+  InitShader();
+  pre_model.pre_axis = camera.axis;
+  pre_model.pre_rotate = getRotateMatrix(camera.axis, 180);
+
+  raster->openSSAA();
+  raster->set4xFreq();
+  raster->reSize();
+}
+
 void LRenderer::PipeLine::draw() {
   if (this->multi_thread) {
     tbb::parallel_for(tbb::blocked_range<size_t>(0, triangleList.size(), 2),
@@ -220,7 +268,7 @@ void LRenderer::PipeLine::drawTriangle(const Triangle& tri) {
     newTriangle[j] = raster->shader()->vertexShader(tri[j]);
   }
 
-    //视锥剔除
+  //视锥剔除
   if (viewCull(newTriangle[0].windows_position, newTriangle[1].windows_position,
                newTriangle[2].windows_position)) {
     return;
@@ -230,8 +278,6 @@ void LRenderer::PipeLine::drawTriangle(const Triangle& tri) {
     newTriangle[j].windows_position =
         homogeneous_division(newTriangle[j].windows_position);
   }
-
-
 
   if (back_clip) {
     if (!backCull(newTriangle[0].windows_position,
@@ -243,6 +289,9 @@ void LRenderer::PipeLine::drawTriangle(const Triangle& tri) {
 
   for (int j = 0; j != 3; j++) {
     newTriangle[j].windows_position = viewport(newTriangle[j].windows_position);
+    /*newTriangle[j].windows_position =
+        viewport(newTriangle[j].windows_position, camera.z_near,
+       camera.z_far);*/
   }
   if (line_mode) {
     raster->drawLineTriangle(newTriangle);
@@ -352,8 +401,26 @@ void LRenderer::PipeLine::changeColor(Eigen::Vector3f&& color) {
 
 void LRenderer::PipeLine::refresh() {
   raster->clear();
-  raster->shader()->setModelMatrix(get_model_matrix(
-      camera.axis, camera.rotate_angle, camera.scale, camera.translate));
+  if (pre_model.pre_axis != camera.axis) {
+    raster->shader()->setModelMatrix(
+        get_model_matrix(getRotateMatrix(camera.axis, camera.rotate_angle),
+                         getScaleMatrix(camera.scale),
+                         getTranslateMatrix(camera.translate)) *
+        pre_model.pre_rotate);
+    pre_model.pre_rotate = getRotateMatrix(camera.axis, camera.rotate_angle) *
+                           pre_model.pre_rotate;
+    pre_model.pre_axis = camera.axis;
+  } else {
+    raster->shader()->setModelMatrix(
+        get_model_matrix(getRotateMatrix(camera.axis, camera.rotate_angle),
+                         getScaleMatrix(camera.scale),
+                         getTranslateMatrix(camera.translate)) *
+        pre_model.pre_rotate);
+    pre_model.pre_rotate = getRotateMatrix(camera.axis, camera.rotate_angle) *
+                           pre_model.pre_rotate;
+    camera.rotate_angle = 0;
+  }
+
   raster->shader()->setViewMatrix(
       get_view_matrix(camera.eye_pos, camera.right, camera.up, camera.front));
   raster->shader()->setProjectMatrix(get_projection_matrix(

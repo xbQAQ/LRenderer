@@ -37,13 +37,18 @@ class Camera {
         axis(_axis),
         rotate_angle(_rotate_angle),
         scale(_scale),
-        translate(_translate) {
-    front = -(_look_at - eye_pos) / (_look_at - eye_pos).norm();
+        translate(_translate),
+        x_angle(0),
+        y_angle(180),
+        z_angle(0) {
+    front = (eye_pos - _look_at) / (eye_pos - _look_at).norm();
     right = world_up.cross(front) / world_up.cross(front).norm();
     up = front.cross(right) / front.cross(right).norm();
   }
 
   void reset();
+  void changeNear(float _near);
+  void changeFar(float _far);
   void updateEyePos(const Eigen::Vector3f& _eye_pos);
   void updateFov(float _fov);
   void updateAspect(int w, int h);
@@ -61,6 +66,9 @@ class Camera {
   void rotateNegitiveDirectionAroundY();  //绕X轴正方向旋转
   void rotatePositiveDirectionAroundZ();  //绕X轴正方向旋转
   void rotateNegitiveDirectionAroundZ();  //绕X轴正方向旋转
+
+ private:
+  float x_angle, y_angle, z_angle;
 };
 }  // namespace LRenderer
 

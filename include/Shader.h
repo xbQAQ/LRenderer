@@ -1,8 +1,9 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <Eigen/Eigen>
 #include <tbb/spin_mutex.h>
+
+#include <Eigen/Eigen>
 
 #include "Fragment.h"
 #include "Texture.h"
@@ -12,7 +13,10 @@
 namespace LRenderer {
 struct Light {
   Eigen::Vector3f position;
-  Eigen::Vector3f intensity;
+  // Eigen::Vector3f Ambient;  // 环境光
+  // Eigen::Vector3f Diffuse;  // 漫反射
+  // Eigen::Vector3f Specular; // 镜面光
+  Eigen::Vector3f intensity;  // 强度
 };
 
 class Shader {
@@ -20,12 +24,13 @@ class Shader {
   Shader(const Eigen::Vector3f& _ka = Eigen::Vector3f(0.005, 0.005, 0.005),
          const Eigen::Vector3f& _kd = {0, 0, 0},
          const Eigen::Vector3f& _ks = Eigen::Vector3f(0.7937, 0.7937, 0.7937))
-      : model(Eigen::Matrix4f::Identity()),
+      : pre_model(Eigen::Matrix4f::Identity()),
+        model(Eigen::Matrix4f::Identity()),
         view(Eigen::Matrix4f::Identity()),
         project(Eigen::Matrix4f::Identity()),
         viewport(Eigen::Matrix4f::Identity()),
         texture(),
-        eye_pos(Eigen::Vector3f(0,0,10)),
+        eye_pos(Eigen::Vector3f(0, 0, 10)),
         ka(_ka),
         kd(_kd),
         ks(_ks) {}
@@ -35,15 +40,17 @@ class Shader {
          const Eigen::Vector3f& _ka = Eigen::Vector3f(0.005, 0.005, 0.005),
          const Eigen::Vector3f& _kd = {0, 0, 0},
          const Eigen::Vector3f& _ks = Eigen::Vector3f(0.7937, 0.7937, 0.7937))
-      : model(_model),
+      : pre_model(Eigen::Matrix4f::Identity()),
+        model(_model),
         view(_view),
         project(_project),
         viewport(_viewport),
         texture(),
-        eye_pos(_eye_pos), ka(_ka),
+        eye_pos(_eye_pos),
+        ka(_ka),
         kd(_kd),
         ks(_ks) {}
-  virtual ~Shader() { std::cout << "~Shader()" << std::endl; }
+  virtual ~Shader() = default;
 
   void setModelMatrix(const Eigen::Matrix4f& m);
   void setViewMatrix(const Eigen::Matrix4f& v);
@@ -68,6 +75,7 @@ class Shader {
   virtual void fragShader(Frag& f);
 
  protected:
+  Eigen::Matrix4f pre_model;
   Eigen::Matrix4f model;
   Eigen::Matrix4f view;
   Eigen::Matrix4f project;

@@ -117,6 +117,10 @@ void LRenderer::UI::show() {
           ImVec2(ImGui::GetWindowWidth() - 400, imageMin.y - 100));
       ImGui::BeginGroup();
 
+      if (ImGui::Button("Reset")) {
+        pipeline->reset();
+      }
+
       ImGui::Checkbox("MultiThread", &multiThread);
       if (multiThread) {
         pipeline->openMutltiThread();
@@ -187,11 +191,22 @@ void LRenderer::UI::show() {
       pipeline->changeColor(
           Eigen::Vector3f(model_color.x, model_color.y, model_color.z));
 
-      ImGui::SetNextItemWidth(300);
+      ImGui::PushItemWidth(300);
       static float fov = 45.0;
       if (ImGui::SliderFloat("FOV", &fov, 0.1, 90.0)) {
         pipeline->camera.updateFov(fov);
       }
+
+      static float znear = 0.1;
+      if (ImGui::SliderFloat("Z Near", &znear, 0.1, 50.0)) {
+        pipeline->camera.changeNear(znear);
+      }
+
+      static float zfar = 50.0;
+      if (ImGui::SliderFloat("Z Far", &zfar, 20.0, 50.0)) {
+        pipeline->camera.changeFar(zfar);
+      }
+      ImGui::PopItemWidth();
 
       inputProcess();
 
@@ -354,8 +369,10 @@ void LRenderer::UI::showMenuBar() {
     if (ImGui::BeginMenu("Style")) {
       if (ImGui::MenuItem("Dark")) {
         ImGui::StyleColorsDark();
+        pipeline->raster->changeBackgroudColor(Eigen::Vector3f(0, 0, 0));
       } else if (ImGui::MenuItem("Light")) {
         ImGui::StyleColorsLight();
+        pipeline->raster->changeBackgroudColor(Eigen::Vector3f(255, 255, 255));
       }
       ImGui::EndMenu();
     }

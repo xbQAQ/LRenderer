@@ -24,7 +24,10 @@ class PipeLine {
         texture_path(".\\models\\spot\\spot_texture.png"),
         line_mode(false),
         back_clip(false),
-        multi_thread(false) {
+        multi_thread(false),
+        pre_model({Eigen::Vector3f(0, 1, 0), Eigen::Matrix4f::Identity()})
+
+  {
     raster = std::make_unique<Rasterization>(width, height);
   }
   int width;
@@ -40,6 +43,7 @@ class PipeLine {
   void drawTriangle(const Triangle& tri);
   void refresh();
   void reloadObj();
+  void reset();
 
   void setObjPath(const std::string& op);
   void changeObjPath(const std::string& op);
@@ -62,6 +66,7 @@ class PipeLine {
 
  private:
   Eigen::Vector4f viewport(const Eigen::Vector4f& point);
+  Eigen::Vector4f viewport(const Eigen::Vector4f& point, float near, float far);
   Eigen::Vector4f homogeneous_division(const Eigen::Vector4f& point);
   bool viewCull(const Eigen::Vector4f& v1, const Eigen::Vector4f& v2,
                 const Eigen::Vector4f& v3);
@@ -82,6 +87,11 @@ class PipeLine {
   bool back_clip;
   bool line_mode;
   bool multi_thread;
+  struct preModelState {
+    Eigen::Vector3f pre_axis;
+    Eigen::Matrix4f pre_rotate;
+  };
+  preModelState pre_model;
 };
 }  // namespace LRenderer
 

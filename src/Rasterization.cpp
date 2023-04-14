@@ -1,6 +1,7 @@
 #include "Rasterization.h"
 
-LRenderer::Rasterization::Rasterization(int w, int h) : width(w), height(h) {
+LRenderer::Rasterization::Rasterization(int w, int h)
+    : width(w), height(h), backgroud_color(Eigen::Vector3f(0,0,0)) {
   frame_buffer.resize(w * h);
   depth_buffer.resize(w * h);
   AA_frame_buffer.resize(w * freq * h * freq);
@@ -8,9 +9,8 @@ LRenderer::Rasterization::Rasterization(int w, int h) : width(w), height(h) {
 }
 
 void LRenderer::Rasterization::clear() {
-  std::fill(frame_buffer.begin(), frame_buffer.end(), Eigen::Vector3f(0, 0, 0));
-  std::fill(AA_frame_buffer.begin(), AA_frame_buffer.end(),
-            Eigen::Vector3f(0, 0, 0));
+  std::fill(frame_buffer.begin(), frame_buffer.end(), backgroud_color);
+  std::fill(AA_frame_buffer.begin(), AA_frame_buffer.end(), backgroud_color);
 
   std::fill(depth_buffer.begin(), depth_buffer.end(),
             -std::numeric_limits<float>::infinity());
@@ -334,6 +334,11 @@ void LRenderer::Rasterization::set16xFreq() {
   freq = 4;  // 4*4
   reSize();
   clear();
+}
+
+void LRenderer::Rasterization::changeBackgroudColor(
+    const Eigen::Vector3f& bcolor) {
+  backgroud_color = bcolor;
 }
 
 LRenderer::Frag LRenderer::Rasterization::constructFrag(int x, int y, int z,

@@ -38,11 +38,14 @@ class Rasterization {
   void set9xFreq();
   void set16xFreq();
 
+  void changeBackgroudColor(const Eigen::Vector3f& bcolor);
+
   private:
   Frag constructFrag(int x, int y, int z, float alpha, float beta, float gamma,
                      const Triangle& t);
 
  private:
+  Eigen::Vector3f backgroud_color;
   std::vector<Eigen::Vector3f> frame_buffer;  // rgb
   std::vector<Eigen::Vector3f> AA_frame_buffer;
   std::vector<float> depth_buffer;            // z-buffer
