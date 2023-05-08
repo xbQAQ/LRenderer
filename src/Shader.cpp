@@ -45,7 +45,7 @@ LRenderer::Vertex LRenderer::Shader::vertexShader(const Vertex& v) {
   Vertex result;
   const Eigen::Matrix3f mvInverseTranspose =
       ((view * model).transpose().inverse()).block<3, 3>(0, 0);
-  result.world_position = (view * model * v.position).head<3>();
+  result.view_position = (view * model * v.position).head<3>();
   result.windows_position = project * view * model * v.position;
   result.normal = mvInverseTranspose * v.normal;
   result.color = v.color;
@@ -55,26 +55,25 @@ LRenderer::Vertex LRenderer::Shader::vertexShader(const Vertex& v) {
 
 void LRenderer::Shader::fragShader(Frag& f) { return; }
 
-void LRenderer::Blin_Phong_Shader::fragShader(Frag& f) {
+void LRenderer::Blinn_Phong_Shader::fragShader(Frag& f) {
   kd = f.color;  // 漫反射系数
 
   const Eigen::Vector3f amb_light_intensity{10, 10, 10};  // 环境光强度,同时也是rgb值
+  // cwiseProduct 矩阵/向量对应位置相乘
+  //  环境光照
+  Eigen::Vector3f La = ka.cwiseProduct(amb_light_intensity);
 
-  float p = 150;
+  float p = 1000;
 
   const Eigen::Vector3f point = f.view_position;
   const Eigen::Vector3f normal = f.normal;
 
-  Eigen::Vector3f result_color = {0, 0, 0};
+  Eigen::Vector3f result_color = La;
   auto computeLight = [=](const Light& light) -> Eigen::Vector3f {
     const float r = (light.position - point).norm();
     const Eigen::Vector3f l = (light.position - point).normalized();
     const Eigen::Vector3f v = (eye_pos - point).normalized();
     const Eigen::Vector3f h = (l + v).normalized();
-
-    // cwiseProduct 矩阵/向量对应位置相乘
-    //  环境光照
-    Eigen::Vector3f La = ka.cwiseProduct(amb_light_intensity);
 
     auto cosThetaDiffuse = l.dot(normal);
     // 漫反射光照
@@ -86,7 +85,7 @@ void LRenderer::Blin_Phong_Shader::fragShader(Frag& f) {
     Eigen::Vector3f Ls =
         ks.cwiseProduct(light.intensity / std::pow(r, 2) *
                         std::pow(std::max((float)0, cosThetaSpecular), p));
-    return La + Ld + Ls;
+    return Ld + Ls;
   };
 
   for (auto& light : lights) {
@@ -106,23 +105,21 @@ void LRenderer::Texture_Shader::fragShader(Frag& f) {
   Eigen::Vector3f kd = texture_color / 255.f;  //将纹理颜色作为漫反射系数
 
   const Eigen::Vector3f amb_light_intensity{10, 10, 10};  //环境光强度
+  //  环境光照
+  const Eigen::Vector3f La = ka.cwiseProduct(amb_light_intensity);
 
   constexpr float p = 150;
 
   const Eigen::Vector3f point = f.view_position;
   const Eigen::Vector3f normal = f.normal;
 
-  Eigen::Vector3f result_color = {0, 0, 0};
+  Eigen::Vector3f result_color = La;
 
   auto computeLight = [=](const Light& light) -> Eigen::Vector3f {
     const float r = (light.position - point).norm();
     const Eigen::Vector3f l = (light.position - point).normalized();
     const Eigen::Vector3f v = (eye_pos - point).normalized();
     const Eigen::Vector3f h = (l + v).normalized();
-
-    // cwiseProduct 矩阵/向量对应位置相乘
-    //  环境光照
-    const Eigen::Vector3f La = ka.cwiseProduct(amb_light_intensity);
 
     auto cosThetaDiffuse = l.dot(normal);
     // 漫反射光照
@@ -135,7 +132,7 @@ void LRenderer::Texture_Shader::fragShader(Frag& f) {
         ks.cwiseProduct(light.intensity / std::pow(r, 2) *
                         std::pow(std::max((float)0, cosThetaSpecular), p));
     
-    return La + Ld + Ls;
+    return Ld + Ls;
   };
 
   for (auto& light : lights) {

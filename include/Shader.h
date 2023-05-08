@@ -95,10 +95,10 @@ class Texture_Shader : public Shader {
   void fragShader(Frag& f) override;
 };
 
-class Blin_Phong_Shader : public Shader {
+class Blinn_Phong_Shader : public Shader {
  public:
-  Blin_Phong_Shader() = default;
-  ~Blin_Phong_Shader() = default;
+  Blinn_Phong_Shader() = default;
+  ~Blinn_Phong_Shader() = default;
   void fragShader(Frag& f) override;
 };
 

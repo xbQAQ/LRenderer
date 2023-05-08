@@ -13,14 +13,14 @@ class Vertex {
          const Eigen::Vector3f& c = Eigen::Vector3f(255, 255, 255),
          const Eigen::Vector2f& t = Eigen::Vector2f(0, 0))
       : windows_position(p),
-        world_position(p.head<3>()),
+        view_position(p.head<3>()),
         position(p),
         normal(n),
         color(c),
         tex(t) {}
   Vertex(const Vertex& V)
       : windows_position(V.windows_position),
-        world_position(V.world_position),
+        view_position(V.view_position),
         position(V.position),
         normal(V.normal),
         color(V.color),
@@ -33,7 +33,7 @@ class Vertex {
   void setTex(const Eigen::Vector2f& t);
 
   Eigen::Vector4f windows_position;
-  Eigen::Vector3f world_position;
+  Eigen::Vector3f view_position;
   Eigen::Vector4f position;
   Eigen::Vector3f normal;
   Eigen::Vector3f color;

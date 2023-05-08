@@ -3,6 +3,7 @@
 static constexpr const char* title = "LRenderer";
 static constexpr const char* cur_path = "./";
 static constexpr const char* output_path = "./output/";
+const double TIME_INTERVAL = 1.0;
 
 static void glfw_error_callback(int error, const char* description) {
   fprintf(stderr, "GLFW Error %d: %s\n", error, description);
@@ -15,7 +16,7 @@ LRenderer::UI::UI(int w, int h)
       image_texture(0),
       showWindow(true),
       windows(nullptr),
-      use_blin_phong_shader(true),
+      use_Blinn_Phong_Shader(true),
       use_texture_shader(false),
       model_color(ImVec4(0.055, 0.733, 0.941, 1.0)),
       about_open(false) {
@@ -85,6 +86,7 @@ void LRenderer::UI::Init() {
 }
 
 void LRenderer::UI::show() {
+  auto startTime = std::chrono::high_resolution_clock::now();
   while (!glfwWindowShouldClose(windows)) {
     pipeline->refresh();
     pipeline->draw();
@@ -110,17 +112,15 @@ void LRenderer::UI::show() {
       ImGui::Image((void*)(intptr_t)image_texture,
                    ImVec2(image.cols, image.rows));
 
-      ImVec2 imageMin = ImGui::GetItemRectMin();
-      ImVec2 imageMax = ImGui::GetItemRectMax();
-      // 工具栏组
-      ImGui::SetCursorPos(
-          ImVec2(ImGui::GetWindowWidth() - 400, imageMin.y - 100));
-      ImGui::BeginGroup();
+      ImGui::SameLine();
+      ImGui::BeginChild(
+          "Tools", ImVec2(0, 0), true,
+          ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize |
+              ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
 
-      if (ImGui::Button("Reset")) {
+      if (ImGui::Button("reset")) {
         pipeline->reset();
       }
-
       ImGui::Checkbox("MultiThread", &multiThread);
       if (multiThread) {
         pipeline->openMutltiThread();
@@ -203,7 +203,7 @@ void LRenderer::UI::show() {
       }
 
       static float zfar = 50.0;
-      if (ImGui::SliderFloat("Z Far", &zfar, 20.0, 50.0)) {
+      if (ImGui::SliderFloat("Z Far", &zfar, 10.0, 50.0)) {
         pipeline->camera.changeFar(zfar);
       }
       ImGui::PopItemWidth();
@@ -211,8 +211,8 @@ void LRenderer::UI::show() {
       inputProcess();
 
       ImGui::Text("Application average %.1f FPS", ImGui::GetIO().Framerate);
-
-      ImGui::EndGroup();
+      
+      ImGui::EndChild();
       ImGui::End();
     }
     if (about_open) {
@@ -389,7 +389,9 @@ void LRenderer::UI::showAbout() {
 
   ImGui::Text("Github: https://github.com/xbQAQ/LRenderer");
   ImGui::Separator();
-  ImGui::Text("A: Move Left\tD: Move Right\tW: Move Up\tS: Move Down\tQ: Move Forward\tE: moveBack");
+  ImGui::Text(
+      "A: Move Left\tD: Move Right\tW: Move Up\tS: Move Down\tQ: Move "
+      "Forward\tE: moveBack");
   ImGui::Text("Up: rotate positive direction around X");
   ImGui::Text("Down: rotate negitive direction around X");
   ImGui::Text("Left: rotate positive direction around Y");

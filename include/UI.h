@@ -10,6 +10,7 @@
 #include <windows.h>
 #include <io.h>
 #include <direct.h>
+#include <chrono>
 
 #include <iostream>
 #include <memory>
@@ -57,7 +58,7 @@ class UI {
   bool line_mode = false;
     
   bool use_texture_shader;
-  bool use_blin_phong_shader;
+  bool use_Blinn_Phong_Shader;
   std::unique_ptr<PipeLine> pipeline;
   cv::Mat image;
   GLuint image_texture;
