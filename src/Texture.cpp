@@ -25,12 +25,12 @@ void LRenderer::Texture::loadTexture(const std::string& path) {
 
 const Eigen::Vector3f& LRenderer::Texture::getColor(float u, float v) {
   // repeat
-  if (u < 0) u = 0;
-  if (u > 1) u = 1;
-  if (v < 0) v = 0;
-  if (v > 1) v = 1;
-  auto u_img = u * width;
-  auto v_img = (1 - v) * height;
+  if (u < 0) u -= floor(u);
+  if (u > 1) u -= floor(u);
+  if (v < 0) v -= floor(v);
+  if (v > 1) v -= floor(v);
+  auto u_img = u * width - 0.5;
+  auto v_img = (1 - v) * height - 0.5;
   auto color = image_data.at<cv::Vec3b>(v_img, u_img);
   return Eigen::Vector3f(color[0], color[1], color[2]);
 }

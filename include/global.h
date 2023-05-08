@@ -21,7 +21,6 @@ static std::tuple<float, float, float> barycentric(Eigen::Vector4f a,
                                                    Eigen::Vector4f b,
                                                    Eigen::Vector4f c, float x,
                                                    float y) {
-  // alpha' beta' gamma' 为透视后的
   float betaH = (x * (a.y() - c.y()) + y * (c.x() - a.x()) + a.x() * c.x() -
                  c.x() * a.y()) /
                 (b.x() * (a.y() - c.y()) + b.y() * (c.x() - a.x()) +

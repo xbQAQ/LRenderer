@@ -174,7 +174,7 @@ void LRenderer::PipeLine::Init() {
   raster->openNormal();
   raster->clear();
 
-  raster->shader() = std::make_unique<Blin_Phong_Shader>();
+  raster->shader() = std::make_unique<Blinn_Phong_Shader>();
   InitShader();
   
   pre_model.pre_axis = camera.axis;
@@ -236,7 +236,7 @@ void LRenderer::PipeLine::reset() {
 
   camera.reset();
 
-  raster->shader() = std::make_unique<Blin_Phong_Shader>();
+  raster->shader() = std::make_unique<Blinn_Phong_Shader>();
   InitShader();
   pre_model.pre_axis = camera.axis;
   pre_model.pre_rotate = getRotateMatrix(camera.axis, 180);
@@ -356,8 +356,8 @@ void LRenderer::PipeLine::setNormalShader() {
 }
 
 void LRenderer::PipeLine::setBlinPhongShader() {
-  if (typeid(*raster->shader()) != typeid(Blin_Phong_Shader)) {
-    raster->shader() = std::make_unique<Blin_Phong_Shader>();
+  if (typeid(*raster->shader()) != typeid(Blinn_Phong_Shader)) {
+    raster->shader() = std::make_unique<Blinn_Phong_Shader>();
     InitShader();
   }
 }
@@ -384,7 +384,7 @@ void LRenderer::PipeLine::closeBackClip() { back_clip = false; }
 
 void LRenderer::PipeLine::openSSAA() { raster->openSSAA(); }
 
-void LRenderer::PipeLine::openMSAA() { raster->openSSAA(); }
+void LRenderer::PipeLine::openMSAA() { raster->openMSAA(); }
 
 void LRenderer::PipeLine::openNormal() { raster->openNormal(); }
 

@@ -82,14 +82,15 @@ void LRenderer::Rasterization::drawTriangle(const Triangle& t) {
                   alpha, beta, gamma, t[0].windows_position.z(),
                   t[1].windows_position.z(), t[2].windows_position.z());
               // 对每个小像素执行一次fragShader
-              Frag frag =
-                  constructFrag(x, y, z_interpolate, alpha, beta, gamma, t);
-              // 输入Vertex输出插值后的Frag
-              m_shader->fragShader(frag);
+              Frag frag = constructFrag(center_x, center_y, z_interpolate,
+                                        alpha, beta,
+                                        gamma, t);
               // z为负数，越大离摄像头越近
               int depth_x = x * freq + n, depth_y = y * freq + m;
               if (z_interpolate >
                   AA_depth_buffer[getAAIndex(depth_x, depth_y)]) {
+                // 输入Vertex输出插值后的Frag
+                m_shader->fragShader(frag);
                 Eigen::Vector3f color = frag.color;
                 AA_depth_buffer[getAAIndex(depth_x, depth_y)] = z_interpolate;
                 AA_frame_buffer[getAAIndex(depth_x, depth_y)] = color;
@@ -123,7 +124,6 @@ void LRenderer::Rasterization::drawTriangle(const Triangle& t) {
                                   gammaPixel, t);
         // 计算每个像素的颜色
         m_shader->fragShader(frag);
-
         int count = 0;
 
         // 对于每一个子像素, 计算AA_frame_buffer的颜色
@@ -172,10 +172,10 @@ void LRenderer::Rasterization::drawTriangle(const Triangle& t) {
               interpolate(alpha, beta, gamma, t[0].windows_position.z(),
                           t[1].windows_position.z(), t[2].windows_position.z());
           Frag frag = constructFrag(x, y, z_interpolate, alpha, beta, gamma, t);
-          // 输入Vertex输出插值后的Frag
-          m_shader->fragShader(frag);
           //  z为负数，越大离摄像头越近
           if (z_interpolate > depth_buffer[getIndex(x, y)]) {
+            // 输入Vertex输出插值后的Frag
+            m_shader->fragShader(frag);
             Eigen::Vector3f color = frag.color;
             depth_buffer[getIndex(x, y)] = z_interpolate;
             Eigen::Vector2i point(x, y);
@@ -346,8 +346,8 @@ LRenderer::Frag LRenderer::Rasterization::constructFrag(int x, int y, int z,
                                                         float gamma,
                                                         const Triangle& t) {
   Frag frag;
-  frag.view_position = interpolate(alpha, beta, gamma, t[0].world_position,
-                                   t[1].world_position, t[2].world_position);
+  frag.view_position = interpolate(alpha, beta, gamma, t[0].view_position,
+                                   t[1].view_position, t[2].view_position);
   frag.normal =
       interpolate(alpha, beta, gamma, t[0].normal, t[1].normal, t[2].normal)
           .normalized();

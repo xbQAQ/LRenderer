@@ -30,7 +30,7 @@ class Rasterization {
   void openMSAA();
   void openSSAA();
   void openNormal();
-
+   
   void reSize();
   Model model;
   int width, height;
@@ -54,6 +54,7 @@ class Rasterization {
   bool SSAA = false;
   std::unique_ptr<Shader> m_shader;
   int freq;
+  
 };
 }  // namespace LRenderer
 
